@@ -16,21 +16,31 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 public class MainActivity extends AppCompatActivity implements
         ConnectionCallbacks,
-        OnConnectionFailedListener {
+        OnConnectionFailedListener,
+        LocationListener {
 
     protected static final String TAG = MainActivity.class.getSimpleName();
     private static final int PERMISSION_REQUEST_CODE = 1;
+    private static final long LOCATION_UPDATE_INTERVAL_MILLISECONDS = 100000;
+    private static final long FASTEST_UPDATE_INTERVAL_MILLISECONDS = 2000;
+    public static final String LOCATION_KEY = "location";
+
 
     protected GoogleApiClient mGoogleApiClient;
-    protected Location lastKnownLocation;
+    protected Location currentLocation;
+    protected LocationRequest locationRequest;
+    protected boolean isFirstLocation = true;
 
-
-    private void loadWeatherListFragment() {
-        Fragment userFragment = WeatherListFragment.newInstance();
+    private void loadWeatherListFragment(Location mLocation) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(LOCATION_KEY, mLocation);
+        Fragment userFragment = WeatherListFragment.newInstance(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.container, userFragment);
         ft.commit();
@@ -42,11 +52,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.main_activity_container);
 
         startLocationService();
-
-//        if (savedInstanceState == null) {
-//            loadWeatherListFragment();
-//            buildGoogleApiClient();
-//        }
     }
 
     private void startLocationService() {
@@ -55,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements
             requestPermission();
         } else {
             buildGoogleApiClient();
+            makeLocationRequest();
             mGoogleApiClient.connect();
         }
     }
@@ -67,12 +73,64 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (mGoogleApiClient!= null && mGoogleApiClient.isConnected())
+            startUpdatingLocation();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mGoogleApiClient!=null && mGoogleApiClient.isConnected())
+            stopUpdatingLocation();
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected())
             mGoogleApiClient.disconnect();
     }
 
+
+    /**
+     * Start location service.
+     */
+    protected void startUpdatingLocation() {
+        if (!checkPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+            requestPermission();
+            return;
+        }
+
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient,
+                locationRequest,
+                this
+        );
+    }
+
+    /**
+     * Stop location service.
+     */
+    protected void stopUpdatingLocation() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+    }
+
+    /**
+     * Construction of Location Request with its own settings.
+     * Fastest update at 2 seconds; this is more suitable for accurate location tracking.
+     */
+    protected void makeLocationRequest() {
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(LOCATION_UPDATE_INTERVAL_MILLISECONDS);
+        locationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_MILLISECONDS);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    /**
+     * Build GoogleApiClient with LocationService API
+     */
     protected synchronized void buildGoogleApiClient() {
         Log.i(TAG, "Building GoogleApiClient");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -118,42 +176,47 @@ public class MainActivity extends AppCompatActivity implements
 
     /**
      * Run when the GoogleApiClient object is connected.
-     * @param connectBundle
+     *
+     * @param bundle Bundle of data provided to clients by Google Play services.
+     *               May be null if no content is provided by the service.
      */
     @Override
-    public void onConnected(@Nullable Bundle connectBundle) {
+    public void onConnected(@Nullable Bundle bundle) {
 
         if (!checkPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)) {
             requestPermission();
             return;
         }
 
-        lastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (lastKnownLocation != null)
-        {
-            Log.d(TAG, "latitude: " + lastKnownLocation.getLatitude());
-            Log.d(TAG, "longitude: " + lastKnownLocation.getLongitude());
-
-        } else {
-            Log.d(TAG, "lastKnownLocation is null");
-            Snackbar.make(
-                    this.findViewById(R.id.container),
-                    "No location detected! Make sure location is enabled.",
-                    Snackbar.LENGTH_LONG)
-                    .show();
-        }
-
+        // start updating Location
+        startUpdatingLocation();
     }
 
+    /**
+     * Call when the client is temporarily in a disconnected state.
+     * @param cause the reason for disconnection
+     */
     @Override
-    public void onConnectionSuspended(int i) {
+    public void onConnectionSuspended(int cause) {
         // for some reasons, in case the connection drop, reconnect.
         mGoogleApiClient.connect();
     }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         // connection failed
         Log.d(TAG, "connection failed: " + connectionResult.getErrorMessage());
+    }
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (isFirstLocation) {
+            Log.d(TAG, "onLocationChanged: " + location.getLongitude()+"/"+ location.getLatitude());
+            currentLocation = location;
+            isFirstLocation = false;
+            loadWeatherListFragment(location);
+        }
     }
 }

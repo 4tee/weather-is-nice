@@ -1,10 +1,12 @@
 package com.felixmm.niceweather;
 
 
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,8 @@ import java.util.Arrays;
 
 public class WeatherListFragment extends Fragment {
 
+    private static final String TAG = WeatherListFragment.class.getSimpleName();
+
     ArrayList<String> sampleString = new ArrayList<>(Arrays.asList(
             "Wednesday; few clouds; Temp: 29.03C-31.71C; Hum:84%",
             "Thursday; moderate rain; Temp: 27.12C-29.07C; Hum:100%",
@@ -28,8 +32,10 @@ public class WeatherListFragment extends Fragment {
     ArrayAdapter<String> mAdapter;
     ListView weatherList;
 
-    public static Fragment newInstance() {
-        return new WeatherListFragment();
+    public static Fragment newInstance(Bundle bundle) {
+        WeatherListFragment fragment = new WeatherListFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable
@@ -67,6 +73,8 @@ public class WeatherListFragment extends Fragment {
             double lat = 1.31500000;
             double lon = 103.76000000;
 
+            Location mLocation = getArguments().getParcelable(MainActivity.LOCATION_KEY);
+            Log.d(TAG, "Fragment: " + mLocation.getLongitude()+"/"+ mLocation.getLatitude());
             return FetchWeatherFromOWM.getDailyWeatherJson(noOfDay, lat, lon);
         }
 
