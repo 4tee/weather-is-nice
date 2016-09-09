@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final long LOCATION_UPDATE_INTERVAL_MILLISECONDS = 100000;
     private static final long FASTEST_UPDATE_INTERVAL_MILLISECONDS = 2000;
     public static final String LOCATION_KEY = "location";
+    public static final String DAY_INTENT_KEY = "day-intent-key";
 
 
     protected GoogleApiClient mGoogleApiClient;
@@ -40,9 +41,9 @@ public class MainActivity extends AppCompatActivity implements
     private void loadWeatherListFragment(Location mLocation) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(LOCATION_KEY, mLocation);
-        Fragment userFragment = WeatherListFragment.newInstance(bundle);
+        Fragment weatherListFragment = WeatherListFragment.newInstance(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container, userFragment);
+        ft.replace(R.id.mainContainer, weatherListFragment);
         ft.commit();
     }
 
@@ -165,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements
                 } else {
 
                     Snackbar.make(
-                            this.findViewById(R.id.container),
+                            this.findViewById(R.id.mainContainer),
                             "Permission Denied, Please allow to proceed!",
                             Snackbar.LENGTH_LONG)
                             .show();

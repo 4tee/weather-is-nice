@@ -1,6 +1,7 @@
 package com.felixmm.niceweather;
 
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -54,6 +56,16 @@ public class WeatherListFragment extends Fragment {
         // Get reference from root view and set adapter on the list
         weatherList = (ListView) rootView.findViewById(R.id.listview_weatherOutlook);
         weatherList.setAdapter(mAdapter);
+        weatherList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+                String dayWeather = mAdapter.getItem(pos);
+
+                Intent dayActivityIntent = new Intent(getActivity(), DayActivity.class);
+                dayActivityIntent.putExtra(MainActivity.DAY_INTENT_KEY, dayWeather);
+                startActivity(dayActivityIntent);
+            }
+        });
 
         // Execute AsyncTask
         new FetchWeatherTask().execute();
