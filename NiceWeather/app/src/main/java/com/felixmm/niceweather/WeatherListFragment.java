@@ -25,6 +25,9 @@ public class WeatherListFragment extends Fragment {
             "Saturday; Fair; Temp: 32C-23C; Hum:80%"
     ));
 
+    ArrayAdapter<String> mAdapter;
+    ListView weatherList;
+
     public static Fragment newInstance() {
         return new WeatherListFragment();
     }
@@ -36,7 +39,7 @@ public class WeatherListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_weather_list, container, false);
 
         // Set sample adapter
-        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(
+       mAdapter = new ArrayAdapter<String>(
                 getActivity(),
                 R.layout.fragment_weather_list_item,
                 R.id.weather_list_item_textview,
@@ -44,7 +47,7 @@ public class WeatherListFragment extends Fragment {
         );
 
         // Get reference from root view and set adapter on the list
-        ListView weatherList = (ListView) rootView.findViewById(R.id.listview_weatherOutlook);
+        weatherList = (ListView) rootView.findViewById(R.id.listview_weatherOutlook);
         weatherList.setAdapter(mAdapter);
 
         // Execute AsyncTask
@@ -65,6 +68,16 @@ public class WeatherListFragment extends Fragment {
             double lon = 103.76000000;
 
             return FetchWeatherFromOWM.getDailyWeatherJson(noOfDay, lat, lon);
+        }
+
+        @Override
+        protected void onPostExecute(String[] dailyWeather) {
+            if (null != dailyWeather)
+            {
+                mAdapter.clear();
+                for (String weather : dailyWeather)
+                    mAdapter.add(weather);
+            }
         }
     }
 }

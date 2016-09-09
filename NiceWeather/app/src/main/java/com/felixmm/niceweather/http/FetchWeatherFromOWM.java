@@ -62,7 +62,7 @@ public class FetchWeatherFromOWM {
             day = formatter.format(date);
 
             int humidityInt = dayForecast.getInt(JSON_HUMIDITY);
-            humidity = Integer.toString(humidityInt);
+            humidity = Integer.toString(humidityInt) + "%";
 
             // description is in a child array called "weather", which is 1 element long.
             JSONObject weatherObject = dayForecast.getJSONArray(JSON_WEATHER).getJSONObject(0);
