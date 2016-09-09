@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.felixmm.niceweather.http.FetchWeatherFromNEA;
+import com.felixmm.niceweather.http.FetchWeatherFromOWM;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,10 +19,10 @@ import java.util.Arrays;
 public class WeatherListFragment extends Fragment {
 
     ArrayList<String> sampleString = new ArrayList<>(Arrays.asList(
-            "Wednesday; Fair; Temp: 32C-23C; Hum:95%-55%",
-            "Thursday; Rain; Temp: 32C-23C; Hum:90%-50%",
-            "Friday; Partly Cloudy; Temp: 32C-23C; Hum:85%-45%",
-            "Saturday; Fair; Temp: 32C-23C; Hum:80%-40%"
+            "Wednesday; few clouds; Temp: 29.03C-31.71C; Hum:84%",
+            "Thursday; moderate rain; Temp: 27.12C-29.07C; Hum:100%",
+            "Friday; light rain; Temp: 28.96C-31.79C; Hum:90%",
+            "Saturday; Fair; Temp: 32C-23C; Hum:80%"
     ));
 
     public static Fragment newInstance() {
@@ -55,12 +55,16 @@ public class WeatherListFragment extends Fragment {
 
 
 
-    public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
+    public class FetchWeatherTask extends AsyncTask<Void, Void, String[]> {
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            FetchWeatherFromNEA.fetch2HoursNowCast();
-            return null;
+        protected String[] doInBackground(Void... params) {
+            // fetch weather from NEA site
+            int noOfDay = 5;
+            double lat = 1.31500000;
+            double lon = 103.76000000;
+
+            return FetchWeatherFromOWM.getDailyWeatherJson(noOfDay, lat, lon);
         }
     }
 }
