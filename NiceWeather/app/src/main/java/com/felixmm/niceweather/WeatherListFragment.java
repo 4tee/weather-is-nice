@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,12 +69,15 @@ public class WeatherListFragment extends Fragment {
         protected String[] doInBackground(Void... params) {
             // fetch weather from NEA site
             int noOfDay = 5;
-            double lat = 1.31500000;
-            double lon = 103.76000000;
 
             Location mLocation = getArguments().getParcelable(MainActivity.LOCATION_KEY);
-            Log.d(TAG, "Fragment: " + mLocation.getLongitude()+"/"+ mLocation.getLatitude());
-            return FetchWeatherFromOWM.getDailyWeatherJson(noOfDay, lat, lon);
+            if (mLocation != null) {
+                double lat = mLocation.getLatitude();
+                double lon = mLocation.getLongitude();
+
+                return FetchWeatherFromOWM.getDailyWeatherJson(noOfDay, lat, lon);
+            }
+            return null;
         }
 
         @Override

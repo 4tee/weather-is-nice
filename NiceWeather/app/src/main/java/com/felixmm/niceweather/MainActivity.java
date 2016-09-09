@@ -213,9 +213,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLocationChanged(Location location) {
         if (isFirstLocation) {
-            Log.d(TAG, "onLocationChanged: " + location.getLongitude()+"/"+ location.getLatitude());
+
             currentLocation = location;
             isFirstLocation = false;
+
             loadWeatherListFragment(location);
         }
     }
