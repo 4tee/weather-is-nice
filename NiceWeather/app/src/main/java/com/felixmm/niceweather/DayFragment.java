@@ -29,7 +29,7 @@ public class DayFragment extends Fragment{
             String str = intent.getStringExtra(MainActivity.DAY_INTENT_KEY);
             textView.setText(str);
         }
-        
+
         return rootView;
     }
 }
