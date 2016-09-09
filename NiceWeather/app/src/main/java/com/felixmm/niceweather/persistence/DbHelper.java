@@ -1,6 +1,7 @@
 package com.felixmm.niceweather.persistence;
 
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -44,4 +45,24 @@ public class DbHelper extends SQLiteOpenHelper{
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + WeatherTable.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
+
+
+    public int bulkInsert(ContentValues[] values) {
+        final SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        int returnCount = 0;
+        try {
+            for (ContentValues value : values) {
+                long _id = db.insert(DataStruct.WeatherTable.TABLE_NAME, null, value);
+                if (_id != -1) {
+                    returnCount++;
+                }
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+        return returnCount;
+    }
+
 }

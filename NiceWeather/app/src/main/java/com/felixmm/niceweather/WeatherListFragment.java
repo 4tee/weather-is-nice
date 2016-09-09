@@ -1,6 +1,7 @@
 package com.felixmm.niceweather;
 
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -15,9 +16,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.felixmm.niceweather.http.FetchWeatherFromOWM;
+import com.felixmm.niceweather.persistence.DataStruct;
+import com.felixmm.niceweather.persistence.DbHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Vector;
 
 public class WeatherListFragment extends Fragment {
 
@@ -32,6 +39,7 @@ public class WeatherListFragment extends Fragment {
 
     ArrayAdapter<String> mAdapter;
     ListView weatherList;
+    DbHelper dbHelper;
 
     public static Fragment newInstance(Bundle bundle) {
         WeatherListFragment fragment = new WeatherListFragment();
@@ -52,6 +60,8 @@ public class WeatherListFragment extends Fragment {
                 R.id.weather_list_item_textview,
                 sampleString
         );
+
+        dbHelper = new DbHelper(getActivity());
 
         // Get reference from root view and set adapter on the list
         weatherList = (ListView) rootView.findViewById(R.id.listview_weatherOutlook);
@@ -75,10 +85,10 @@ public class WeatherListFragment extends Fragment {
 
 
 
-    public class FetchWeatherTask extends AsyncTask<Void, Void, String[]> {
+    public class FetchWeatherTask extends AsyncTask<Void, Void, Vector<ContentValues>> {
 
         @Override
-        protected String[] doInBackground(Void... params) {
+        protected Vector<ContentValues> doInBackground(Void... params) {
             // fetch weather from NEA site
             int noOfDay = 5;
 
@@ -93,12 +103,30 @@ public class WeatherListFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String[] dailyWeather) {
+        protected void onPostExecute(Vector<ContentValues> dailyWeather) {
             if (null != dailyWeather)
             {
-                mAdapter.clear();
-                for (String weather : dailyWeather)
-                    mAdapter.add(weather);
+                if (dailyWeather.size() > 0) {
+                    ContentValues[] cvArray = new ContentValues[dailyWeather.size()];
+                    dailyWeather.toArray(cvArray);
+                    dbHelper.bulkInsert(cvArray);
+
+                    mAdapter.clear();
+                    for (ContentValues weather : cvArray) {
+                        long dt = weather.getAsLong(DataStruct.WeatherTable.COL_DATE);
+                        Date date = new Date(dt);
+                        SimpleDateFormat formatter = new SimpleDateFormat("EEEE", Locale.getDefault());
+                        String day = formatter.format(date);
+
+                        String description = weather.getAsString(DataStruct.WeatherTable.COL_DESC);
+                        int low = weather.getAsInteger(DataStruct.WeatherTable.COL_MIN_TEMP);
+                        int high = weather.getAsInteger(DataStruct.WeatherTable.COL_MAX_TEMP);
+                        int humidity = weather.getAsInteger(DataStruct.WeatherTable.COL_HUMIDITY);
+
+                        String str = day + "; " + description + "; Temp:" + low + "-" + high + "C; Hum:" + humidity + "%";
+                        mAdapter.add(str);
+                    }
+                }
             }
         }
     }

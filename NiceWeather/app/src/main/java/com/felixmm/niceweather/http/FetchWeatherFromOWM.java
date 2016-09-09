@@ -1,7 +1,10 @@
 package com.felixmm.niceweather.http;
 
+import android.content.ContentValues;
 import android.net.Uri;
 import android.util.Log;
+
+import com.felixmm.niceweather.persistence.DataStruct;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,18 +19,18 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Vector;
 
 
 public class FetchWeatherFromOWM {
 
     public static final String TAG = FetchWeatherFromOWM.class.getSimpleName();
 
-
     private static String formatHighLows(double high, double low) {
         return high + "-" + low + "C";
     }
 
-    private static String[] getDailyWeatherDataFromJson(String jsonStr, int noOfDays)
+    private static Vector<ContentValues> getDailyWeatherDataFromJson(String jsonStr, int noOfDays)
             throws JSONException {
 
         // These are the names of the JSON objects that need to be extracted.
@@ -44,6 +47,8 @@ public class FetchWeatherFromOWM {
         JSONArray weatherArray = forecastJson.getJSONArray(JSON_LIST);
 
         String[] resultStrs = new String[noOfDays];
+        Vector<ContentValues> cvVector = new Vector<>(weatherArray.length());
+
         for(int i = 0; i < weatherArray.length(); i++) {
             //our format = "Wednesday; few clouds; Temp:29.03C-31.71C; Hum:84%",
             String day;
@@ -57,9 +62,6 @@ public class FetchWeatherFromOWM {
             // open weather map reports the date as a unix timestamp (seconds)
             // convert it to milliseconds to convert to a Date object
             long dt = dayForecast.getLong(JSON_DATETIME) * 1000;
-            Date date = new Date(dt);
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.getDefault());
-            day = formatter.format(date);
 
             int humidityInt = dayForecast.getInt(JSON_HUMIDITY);
             humidity = Integer.toString(humidityInt) + "%";
@@ -76,6 +78,19 @@ public class FetchWeatherFromOWM {
 
             highAndLow = formatHighLows(high, low);
             //"Wednesday; few clouds; Temp:29.03C-31.71C; Hum:84%",
+
+            ContentValues weatherValues = new ContentValues();
+
+            weatherValues.put(DataStruct.WeatherTable.COL_DATE, dt);
+            weatherValues.put(DataStruct.WeatherTable.COL_DESC, description);
+            weatherValues.put(DataStruct.WeatherTable.COL_MIN_TEMP, low);
+            weatherValues.put(DataStruct.WeatherTable.COL_MAX_TEMP, high);
+            weatherValues.put(DataStruct.WeatherTable.COL_HUMIDITY, humidityInt);
+            cvVector.add(weatherValues);
+
+            Date date = new Date(dt);
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.getDefault());
+            day = formatter.format(date);
             resultStrs[i] = day + "; " + description + "; Temp:" + highAndLow + "; Hum:" + humidity;
         }
 
@@ -83,11 +98,11 @@ public class FetchWeatherFromOWM {
             Log.v(TAG, s);
         }
 
-        return resultStrs;
-
+        //return resultStrs;
+        return cvVector;
     }
 
-    public static String[] getDailyWeatherJson(int noOfDay, double latitude, double longitude) {
+    public static Vector<ContentValues> getDailyWeatherJson(int noOfDay, double latitude, double longitude) {
 
         final String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?";
         final String LAT_PARAM = "lat";
