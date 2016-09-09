@@ -1,6 +1,7 @@
 package com.felixmm.niceweather;
 
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.felixmm.niceweather.http.FetchWeatherFromNEA;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +47,20 @@ public class WeatherListFragment extends Fragment {
         ListView weatherList = (ListView) rootView.findViewById(R.id.listview_weatherOutlook);
         weatherList.setAdapter(mAdapter);
 
+        // Execute AsyncTask
+        new FetchWeatherTask().execute();
+
         return rootView;
+    }
+
+
+
+    public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            FetchWeatherFromNEA.fetch2HoursNowCast();
+            return null;
+        }
     }
 }
