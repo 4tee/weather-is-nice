@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NiceWeather</string>
+    <string name="location_setting">Location Setting</string>
+    <string name="location_is_disabled">Location is disabled. Please enable in</string>
 </resources>

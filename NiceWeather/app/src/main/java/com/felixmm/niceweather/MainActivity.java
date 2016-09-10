@@ -1,7 +1,10 @@
 package com.felixmm.niceweather;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final String DAY_INTENT_KEY = "day-intent-key";
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int LOCATION_ENABLE_CODE = 100;
     private static final int PERMISSION_REQUEST_CODE = 1;
     private static final long LOCATION_UPDATE_INTERVAL_MILLISECONDS = 100000;
     private static final long FASTEST_UPDATE_INTERVAL_MILLISECONDS = 2000;
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest locationRequest;
     private boolean isFirstLocation = true;
+    private LocationManager locationManager;
 
     private void loadWeatherListFragment(Location mLocation) {
         Bundle bundle = new Bundle();
@@ -47,11 +53,34 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == LOCATION_ENABLE_CODE) {
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {
+                findViewById(R.id.layout_location).setVisibility(View.INVISIBLE);
+                startLocationService();
+            }
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_container);
 
-        startLocationService();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
+        if ( !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {
+            findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
+            findViewById(R.id.button_location).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS),
+                       LOCATION_ENABLE_CODE);
+                }
+            });
+
+        } else {
+            startLocationService();
+        }
     }
 
     private void startLocationService() {
