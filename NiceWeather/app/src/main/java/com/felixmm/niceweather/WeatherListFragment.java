@@ -1,27 +1,30 @@
 package com.felixmm.niceweather;
 
 
-import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.felixmm.niceweather.adapter.WeatherAdapter;
-import com.felixmm.niceweather.http.FetchWeatherFromOWM;
+import com.felixmm.niceweather.async.FetchWeatherAsyncTask;
 import com.felixmm.niceweather.persistence.DataStruct;
+import com.felixmm.niceweather.swissknife.SwissKnife;
 
-import java.util.Vector;
-
-public class WeatherListFragment extends Fragment {
+public class WeatherListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = WeatherListFragment.class.getSimpleName();
+    private static final int LOADER_ID = 1;
 
     WeatherAdapter wAdapter;
     ListView weatherList;
@@ -36,79 +39,63 @@ public class WeatherListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        // Load data from database.
-//        dbHelper = new DbHelper(getActivity());
-//        SQLiteDatabase db = dbHelper.getReadableDatabase();
-//        Cursor cursor = db.query(
-//                DataStruct.WeatherTable.TABLE_NAME,
-//                null, // columns
-//                null, // selection
-//                null, // selectionArgs
-//                null, // groupby
-//                null, // having
-//                null); // sort order
-
-        Cursor cursor = getContext().getContentResolver().query(
-                DataStruct.WeatherTable.CONTENT_URI,
-                null, // columns
-                null, // selection
-                null, // selectionArgs
-                null); // sort order
-
         // we have our own custom adapter defined to display results in the listview.
-        wAdapter = new WeatherAdapter(getActivity(), cursor, 0);
+        // We change our adapter to cursor loader since it can help us to work with database,
+        // manage our cursor and run on different thread.
+        wAdapter = new WeatherAdapter(getActivity(), null, 0);
 
         View rootView = inflater.inflate(R.layout.fragment_weather_list, container, false);
 
         // Get reference from root view and set adapter on the list
         weatherList = (ListView) rootView.findViewById(R.id.listview_weatherOutlook);
         weatherList.setAdapter(wAdapter);
+        weatherList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
 
-//        weatherList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
-//                String dayWeather = mAdapter.getItem(pos);
-//
-//                Intent dayActivityIntent = new Intent(getActivity(), DayActivity.class);
-//                dayActivityIntent.putExtra(MainActivity.DAY_INTENT_KEY, dayWeather);
-//                startActivity(dayActivityIntent);
-//            }
-//        });
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(pos);
+
+                String dayWeather = SwissKnife.formatUXFormat(cursor);
+
+                Intent dayActivityIntent = new Intent(getActivity(), DayActivity.class);
+                dayActivityIntent.putExtra(MainActivity.DAY_INTENT_KEY, dayWeather);
+                startActivity(dayActivityIntent);
+            }
+        });
 
 
 
         return rootView;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        getLoaderManager().initLoader(LOADER_ID, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        new FetchWeatherTask().execute();
+
+        Location mLocation = getArguments().getParcelable(MainActivity.LOCATION_KEY);
+        new FetchWeatherAsyncTask(getActivity(), mLocation).execute();
     }
 
-    public class FetchWeatherTask extends AsyncTask<Void, Void, Void> {
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            // fetch weather from NEA site
-            int noOfDay = 5;
+        return new CursorLoader(getActivity(),
+                DataStruct.WeatherTable.CONTENT_URI,null,null,null,null);
+    }
 
-            Location mLocation = getArguments().getParcelable(MainActivity.LOCATION_KEY);
-            if (mLocation != null) {
-                double lat = mLocation.getLatitude();
-                double lon = mLocation.getLongitude();
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor newCursor) {
+        wAdapter.swapCursor(newCursor);
+    }
 
-                Vector<ContentValues> cvVector = FetchWeatherFromOWM.getDailyWeatherJson(noOfDay, lat, lon);
-                if (cvVector != null && cvVector.size() > 0) {
-                    ContentValues[] cvArray = new ContentValues[cvVector.size()];
-                    cvVector.toArray(cvArray);
-
-                    getContext().getContentResolver().bulkInsert(DataStruct.WeatherTable.CONTENT_URI,
-                            cvArray);
-                }
-            }
-            return null;
-        }
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        wAdapter.swapCursor(null);
     }
 }

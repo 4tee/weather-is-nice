@@ -196,6 +196,7 @@ public class MyContentProvider extends ContentProvider {
                     db.endTransaction();
                 }
 
+                Log.d("MyContentProvider", "lastId at Bulk Insert: " + lastId);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return returnCount;
             default:
