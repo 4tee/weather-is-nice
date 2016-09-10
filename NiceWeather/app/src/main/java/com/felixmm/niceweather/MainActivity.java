@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_container);
 
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
         if ( !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {
             findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
@@ -89,7 +90,9 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             buildGoogleApiClient();
             makeLocationRequest();
-            mGoogleApiClient.connect();
+//            mGoogleApiClient.connect();
+            loadWeatherListFragment(LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient));
+
         }
     }
 

@@ -1,7 +1,6 @@
 package com.felixmm.niceweather.persistence;
 
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -47,43 +46,4 @@ public class DbHelper extends SQLiteOpenHelper{
     }
 
 
-    public int bulkInsert(ContentValues[] values) {
-        final SQLiteDatabase db = getWritableDatabase();
-        db.beginTransaction();
-        int returnCount = 0;
-        try {
-            for (ContentValues value : values) {
-                long _id = db.insert(DataStruct.WeatherTable.TABLE_NAME, null, value);
-                if (_id != -1) {
-                    returnCount++;
-                }
-            }
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-            db.close();
-        }
-        return returnCount;
-    }
-
-    /**
-     * Delete rows from the table.
-     *
-     * @param table the table to delete from
-     * @param whereClause the optional WHERE clause to apply when deleting.
-     *            Passing null will delete all rows.
-     * @param whereArgs You may include ?s in the where clause, which
-     *            will be replaced by the values from whereArgs. The values
-     *            will be bound as Strings.
-     * @return the number of rows affected if a whereClause is passed in, 0
-     *         otherwise. To remove all rows and get a count pass "1" as the
-     *         whereClause.
-     */
-    public int deleteRows(String table, String whereClause, String[] whereArgs) {
-        final SQLiteDatabase db = getWritableDatabase();
-
-        int rowAffected = db.delete(table, whereClause, whereArgs);
-        db.close();
-        return rowAffected;
-    }
 }

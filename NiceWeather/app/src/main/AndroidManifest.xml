@@ -27,6 +27,12 @@
                 android:value=".MainActivity" />
         </activity>
 
+        <provider
+            android:authorities="com.felixmm.niceweather"
+            android:name=".content_provider.MyContentProvider"
+            android:exported="false"
+            android:syncable="true" />
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

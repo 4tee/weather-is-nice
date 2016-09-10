@@ -45,13 +45,14 @@ public class WeatherAdapter extends CursorAdapter {
      */
     private String formatUXFormat(Cursor cursor) {
 
+        int index = cursor.getInt(DataStruct.WeatherTable.COL_INDEX_ID);
         long dt = cursor.getLong(DataStruct.WeatherTable.COL_INDEX_DATE);
         String description = cursor.getString(DataStruct.WeatherTable.COL_INDEX_DESC);
         int low = cursor.getInt(DataStruct.WeatherTable.COL_INDEX_MIN_TEMP);
         int high = cursor.getInt(DataStruct.WeatherTable.COL_INDEX_MAX_TEMP);
         int humidity = cursor.getInt(DataStruct.WeatherTable.COL_INDEX_HUMIDITY);
 
-        return dtToReadableDate(dt) + ";" + description + "; Temp:" + low
+        return index + "; " + dtToReadableDate(dt) + ";" + description + "; Temp:" + low
                 + "-" + high + "C; Hum:" + humidity + "%";
 
     }
