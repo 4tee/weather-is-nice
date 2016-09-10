@@ -25,18 +25,17 @@ public class MainActivity extends AppCompatActivity implements
         OnConnectionFailedListener,
         LocationListener {
 
-    protected static final String TAG = MainActivity.class.getSimpleName();
-    private static final int PERMISSION_REQUEST_CODE = 1;
-    private static final long LOCATION_UPDATE_INTERVAL_MILLISECONDS = 100000;
-    private static final long FASTEST_UPDATE_INTERVAL_MILLISECONDS = 2000;
     public static final String LOCATION_KEY = "location";
     public static final String DAY_INTENT_KEY = "day-intent-key";
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final int PERMISSION_REQUEST_CODE = 1;
+    private static final long LOCATION_UPDATE_INTERVAL_MILLISECONDS = 100000;
+    private static final long FASTEST_UPDATE_INTERVAL_MILLISECONDS = 2000;
 
-    protected GoogleApiClient mGoogleApiClient;
-    protected Location currentLocation;
-    protected LocationRequest locationRequest;
-    protected boolean isFirstLocation = true;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest locationRequest;
+    private boolean isFirstLocation = true;
 
     private void loadWeatherListFragment(Location mLocation) {
         Bundle bundle = new Bundle();
@@ -56,8 +55,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void startLocationService() {
-        if (!checkPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) ||
-                !checkPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        if (!checkPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)) {
             requestPermission();
         } else {
             buildGoogleApiClient();
@@ -104,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements
             return;
         }
 
+        Log.i(TAG, "startUpdatingLocation");
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient,
                 locationRequest,
@@ -115,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements
      * Stop location service.
      */
     protected void stopUpdatingLocation() {
+        Log.i(TAG, "stopUpdatingLocation");
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 
@@ -184,6 +184,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
+        Log.i(TAG, "onConnected");
         if (!checkPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)) {
             requestPermission();
             return;
@@ -199,6 +200,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override
     public void onConnectionSuspended(int cause) {
+        Log.i(TAG, "onConnectionSuspended");
+
         // for some reasons, in case the connection drop, reconnect.
         mGoogleApiClient.connect();
     }
@@ -213,11 +216,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.i(TAG, "onLocationChanged");
         if (isFirstLocation) {
 
-            currentLocation = location;
             isFirstLocation = false;
-
             loadWeatherListFragment(location);
         }
     }

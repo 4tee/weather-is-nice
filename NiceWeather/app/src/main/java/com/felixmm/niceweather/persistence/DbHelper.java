@@ -10,8 +10,8 @@ import com.felixmm.niceweather.persistence.DataStruct.WeatherTable;
 
 public class DbHelper extends SQLiteOpenHelper{
 
-    protected static final String DB_NAME = "NiceWeatherDB";
-    protected static final int DB_VERSION = 1;
+    private static final String DB_NAME = "NiceWeatherDB";
+    private static final int DB_VERSION = 1;
 
     public DbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -61,8 +61,29 @@ public class DbHelper extends SQLiteOpenHelper{
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
+            db.close();
         }
         return returnCount;
     }
 
+    /**
+     * Delete rows from the table.
+     *
+     * @param table the table to delete from
+     * @param whereClause the optional WHERE clause to apply when deleting.
+     *            Passing null will delete all rows.
+     * @param whereArgs You may include ?s in the where clause, which
+     *            will be replaced by the values from whereArgs. The values
+     *            will be bound as Strings.
+     * @return the number of rows affected if a whereClause is passed in, 0
+     *         otherwise. To remove all rows and get a count pass "1" as the
+     *         whereClause.
+     */
+    public int deleteRows(String table, String whereClause, String[] whereArgs) {
+        final SQLiteDatabase db = getWritableDatabase();
+
+        int rowAffected = db.delete(table, whereClause, whereArgs);
+        db.close();
+        return rowAffected;
+    }
 }
