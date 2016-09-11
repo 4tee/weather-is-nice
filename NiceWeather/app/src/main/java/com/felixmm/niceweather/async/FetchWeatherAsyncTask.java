@@ -11,7 +11,7 @@ import com.felixmm.niceweather.persistence.DataStruct;
 import java.util.Vector;
 
 /**
- * Created by rhymes_mcpro on 10/9/16.
+ * Unused. Replaced by WeatherService.
  */
 public class FetchWeatherAsyncTask extends AsyncTask<Void, Void, Void> {
 
@@ -26,7 +26,7 @@ public class FetchWeatherAsyncTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         // fetch weather from NEA site
-        int noOfDay = 8;
+        int noOfDay = 7;
 
         if (mLocation != null) {
             double lat = mLocation.getLatitude();

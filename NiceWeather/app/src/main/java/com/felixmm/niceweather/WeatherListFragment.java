@@ -18,7 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.felixmm.niceweather.adapter.WeatherAdapter;
-import com.felixmm.niceweather.async.FetchWeatherAsyncTask;
+import com.felixmm.niceweather.intent_service.WeatherService;
 import com.felixmm.niceweather.persistence.DataStruct;
 
 public class WeatherListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -82,7 +82,17 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
         super.onStart();
 
         Location mLocation = getArguments().getParcelable(MainActivity.LOCATION_KEY);
-        new FetchWeatherAsyncTask(getActivity(), mLocation).execute();
+
+        if (mLocation != null) {
+            Intent intent = new Intent(getActivity(), WeatherService.class);
+            intent.putExtra(WeatherService.EXTRA_NO_OF_DAY, 7);
+            intent.putExtra(WeatherService.EXTRA_LONGITUDE, mLocation.getLongitude());
+            intent.putExtra(WeatherService.EXTRA_LATITUDE, mLocation.getLatitude());
+            getActivity().startService(intent);
+        }
+        //new FetchWeatherAsyncTask(getActivity(), mLocation).execute();
+
+
     }
 
     @Override

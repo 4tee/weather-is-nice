@@ -30,7 +30,7 @@ public class FetchWeatherFromOWM {
         return high + "-" + low + "C";
     }
 
-    private static Vector<ContentValues> getDailyWeatherDataFromJson(String jsonStr, int noOfDays)
+    private static Vector<ContentValues> getDailyWeatherDataFromJson(String jsonStr)
             throws JSONException {
 
         // These are the names of the JSON objects that need to be extracted.
@@ -43,6 +43,8 @@ public class FetchWeatherFromOWM {
         final String JSON_MIN = "min";
         final String JSON_DESCRIPTION = "description";
         final String JSON_DATETIME = "dt";
+
+        if (jsonStr == null) return null;
 
         JSONObject forecastJson = new JSONObject(jsonStr);
         JSONArray weatherArray = forecastJson.getJSONArray(JSON_LIST);
@@ -180,7 +182,7 @@ public class FetchWeatherFromOWM {
 
         // parse the result into Json object
         try {
-            return getDailyWeatherDataFromJson(jsonResponseStr, 5);
+            return getDailyWeatherDataFromJson(jsonResponseStr);
         } catch (JSONException e) {
             Log.e(TAG, e.getMessage(), e);
             e.printStackTrace();
