@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements
         LocationListener {
 
     public static final String LOCATION_KEY = "location";
-    public static final String DAY_INTENT_KEY = "day-intent-key";
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int LOCATION_ENABLE_CODE = 100;
@@ -67,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_container);
-
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
         if ( !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {
