@@ -4,6 +4,7 @@ package com.felixmm.niceweather;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,7 +20,6 @@ import android.widget.ListView;
 import com.felixmm.niceweather.adapter.WeatherAdapter;
 import com.felixmm.niceweather.async.FetchWeatherAsyncTask;
 import com.felixmm.niceweather.persistence.DataStruct;
-import com.felixmm.niceweather.swissknife.SwissKnife;
 
 public class WeatherListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -55,11 +55,14 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
 
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(pos);
 
-                String dayWeather = SwissKnife.formatUXFormat(cursor);
+                if (cursor != null) {
+                    long dt = cursor.getLong(DataStruct.WeatherTable.COL_INDEX_DATE);
+                    Uri weatherWithDateUri = DataStruct.WeatherTable.buildWeatherUriWithDate(dt);
 
-                Intent dayActivityIntent = new Intent(getActivity(), DayActivity.class);
-                dayActivityIntent.putExtra(MainActivity.DAY_INTENT_KEY, dayWeather);
-                startActivity(dayActivityIntent);
+                    Intent dayActivityIntent = new Intent(getActivity(), DayActivity.class);
+                    dayActivityIntent.setData(weatherWithDateUri);
+                    startActivity(dayActivityIntent);
+                }
             }
         });
 

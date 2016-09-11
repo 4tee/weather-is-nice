@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             buildGoogleApiClient();
             makeLocationRequest();
-//            mGoogleApiClient.connect();
             loadWeatherListFragment(LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient));
 
         }
@@ -256,4 +255,6 @@ public class MainActivity extends AppCompatActivity implements
             loadWeatherListFragment(location);
         }
     }
+
+
 }

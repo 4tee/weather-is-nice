@@ -48,6 +48,7 @@ public class MyContentProvider extends ContentProvider {
                         String sortOrder) {
         Cursor cursor;
         final int matching = sUriMatcher.match(uri);
+        Log.d("MyContentProvider", "matching: " + matching);
         switch (matching) {
             case WEATHER: {
                 cursor = dbHelper.getReadableDatabase().query(
@@ -64,6 +65,7 @@ public class MyContentProvider extends ContentProvider {
             case WEATHER_DATE: {
 
                 long date = DataStruct.WeatherTable.getDateFromUri(uri);
+                Log.d("MyContentProvider", "WEATHER WITH DATE: " + date);
                 cursor = dbHelper.getReadableDatabase().query(
                         DataStruct.WeatherTable.TABLE_NAME,
                         columns,

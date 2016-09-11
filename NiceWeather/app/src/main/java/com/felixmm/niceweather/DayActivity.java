@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 public class DayActivity extends AppCompatActivity{
 
+    public static final String DAY_CONTENT_URI = "DAY_CONTENT_URI";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,6 +19,8 @@ public class DayActivity extends AppCompatActivity{
 
     private void loadDayFragment() {
         Bundle bundle = new Bundle();
+        bundle.putParcelable(DAY_CONTENT_URI, getIntent().getData());
+
         Fragment dayFragment = DayFragment.newInstance(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.dayContainer, dayFragment);

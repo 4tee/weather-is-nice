@@ -1,12 +1,79 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/day_textview"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/textView" />
+        android:text="@string/sample_day"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center"
+        android:textAppearance="?android:textAppearanceLarge"/>
+
+    <ImageView
+        android:id="@+id/day_icon"
+        android:layout_weight="1"
+        android:layout_width="@dimen/img_size_big_layout"
+        android:layout_height="@dimen/img_size_big_layout"
+        android:src="@drawable/icon02d"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/day_weather_desp_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:text="@string/sample_temp_desc_text"
+        android:fontFamily="sans-serif-condensed" />
+
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/day_humidity_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sample_humidity_text"
+                android:drawableLeft="@drawable/icon_humidity"
+                android:fontFamily="sans-serif-condensed"
+                android:layout_gravity="center"
+                android:textAppearance="?android:textAppearanceLarge"/>
+        </FrameLayout>
+
+
+        <TextView
+            android:id="@+id/day_max_temp_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:text="@string/sample_temp_text"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:fontFamily="sans-serif-condensed" />
+
+        <TextView
+            android:id="@+id/day_min_temp_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sample_temp_text"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:fontFamily="sans-serif-condensed" />
+
+    </LinearLayout>
 </LinearLayout>

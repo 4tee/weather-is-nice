@@ -55,5 +55,11 @@ public class DataStruct {
         public static Uri buildWeatherUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+        public static Uri buildWeatherUriWithDate(long dt) {
+            return CONTENT_URI.buildUpon().appendPath(Long.toString(dt)).build();
+//            return CONTENT_URI.buildUpon().appendQueryParameter(COL_DATE, Long.toString(dt))
+//                    .build();
+        }
     }
 }
