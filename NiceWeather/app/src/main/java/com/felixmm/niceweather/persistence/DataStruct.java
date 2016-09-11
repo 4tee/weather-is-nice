@@ -37,6 +37,7 @@ public class DataStruct {
         public static final String COL_MIN_TEMP = "minTemp";
         public static final String COL_MAX_TEMP = "maxTemp";
         public static final String COL_HUMIDITY = "humidity";
+        public static final String COL_WEATHER_ID = "weatherId";
 
         // column index for those table column
         public static final int COL_INDEX_ID = 0;
@@ -45,6 +46,7 @@ public class DataStruct {
         public static final int COL_INDEX_MIN_TEMP = 3;
         public static final int COL_INDEX_MAX_TEMP = 4;
         public static final int COL_INDEX_HUMIDITY = 5;
+        public static final int COL_INDEX_WEATHER_ID = 6;
 
         public static long getDateFromUri(Uri uri) {
             return Long.parseLong(uri.getPathSegments().get(1));

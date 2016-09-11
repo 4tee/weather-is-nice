@@ -37,6 +37,7 @@ public class FetchWeatherFromOWM {
         final String JSON_LIST = "list";
         final String JSON_HUMIDITY = "humidity";
         final String JSON_WEATHER = "weather";
+        final String JSON_WEATHER_ID = "id";
         final String JSON_TEMPERATURE = "temp";
         final String JSON_MAX = "max";
         final String JSON_MIN = "min";
@@ -55,6 +56,7 @@ public class FetchWeatherFromOWM {
             String description;
             String highAndLow;
             String humidity;
+            int weatherId;
 
             // Get the JSON object representing the day
             JSONObject dayForecast = weatherArray.getJSONObject(i);
@@ -69,6 +71,7 @@ public class FetchWeatherFromOWM {
             // description is in a child array called "weather", which is 1 element long.
             JSONObject weatherObject = dayForecast.getJSONArray(JSON_WEATHER).getJSONObject(0);
             description = weatherObject.getString(JSON_DESCRIPTION);
+            weatherId = weatherObject.getInt(JSON_WEATHER_ID);
 
             // Temperatures are in a child object called "temp".  Try not to name variables
             // "temp" when working with temperature.  It confuses everybody.
@@ -83,6 +86,7 @@ public class FetchWeatherFromOWM {
 
             weatherValues.put(DataStruct.WeatherTable.COL_DATE, dt);
             weatherValues.put(DataStruct.WeatherTable.COL_DESC, description);
+            weatherValues.put(DataStruct.WeatherTable.COL_WEATHER_ID, weatherId);
             weatherValues.put(DataStruct.WeatherTable.COL_MIN_TEMP, low);
             weatherValues.put(DataStruct.WeatherTable.COL_MAX_TEMP, high);
             weatherValues.put(DataStruct.WeatherTable.COL_HUMIDITY, humidityInt);
@@ -91,7 +95,7 @@ public class FetchWeatherFromOWM {
             Date date = new Date(dt);
             SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.getDefault());
             day = formatter.format(date);
-            resultStrs[i] = day + "; " + description + "; Temp:" + highAndLow + "; Hum:" + humidity;
+            resultStrs[i] = day + "; " + weatherId + "; " + description + "; Temp:" + highAndLow + "; Hum:" + humidity;
         }
 
         for (String s : resultStrs) {

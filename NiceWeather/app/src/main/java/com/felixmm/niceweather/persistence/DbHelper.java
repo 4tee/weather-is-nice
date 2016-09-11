@@ -26,13 +26,15 @@ public class DbHelper extends SQLiteOpenHelper{
         // minTemp      REAL NOT NULL
         // maxTemp      REAL NOT NULL
         // humidity     INTEGER NOT NULL
+        // weatherId    INTEGER NOT NULL
         final String SQL_CREATE_WEATHER_TABLE = "CREATE TABLE " + WeatherTable.TABLE_NAME + " (" +
                 WeatherTable._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 WeatherTable.COL_DATE + " INTEGER NOT NULL, " +
                 WeatherTable.COL_DESC + " TEXT NOT NULL, " +
                 WeatherTable.COL_MIN_TEMP + " REAL NOT NULL, " +
                 WeatherTable.COL_MAX_TEMP + " REAL NOT NULL, " +
-                WeatherTable.COL_HUMIDITY + " INTEGER NOT NULL" +
+                WeatherTable.COL_HUMIDITY + " INTEGER NOT NULL, " +
+                WeatherTable.COL_WEATHER_ID + " INTEGER NOT NULL" +
                 " );";
 
         sqLiteDatabase.execSQL(SQL_CREATE_WEATHER_TABLE);

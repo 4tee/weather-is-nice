@@ -76,8 +76,11 @@ public class WeatherAdapter extends CursorAdapter {
         viewHolder.dayTextView.setText(day);
 
         if (type == VIEW_TYPE_BIG) {
+
+            int weatherId = cursor.getInt(DataStruct.WeatherTable.COL_INDEX_WEATHER_ID);
+
             String description = cursor.getString(DataStruct.WeatherTable.COL_INDEX_DESC);
-            viewHolder.descriptionTextView.setText(description);
+            viewHolder.descriptionTextView.setText(description+ " " + weatherId);
 
             int humidity = cursor.getInt(DataStruct.WeatherTable.COL_INDEX_HUMIDITY);
             viewHolder.humidityTextView.setText(SwissKnife.formatHumidity(context, humidity));
