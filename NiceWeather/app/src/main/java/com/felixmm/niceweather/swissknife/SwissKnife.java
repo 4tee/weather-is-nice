@@ -1,8 +1,10 @@
 package com.felixmm.niceweather.swissknife;
 
 
+import android.content.Context;
 import android.database.Cursor;
 
+import com.felixmm.niceweather.R;
 import com.felixmm.niceweather.persistence.DataStruct;
 
 import java.text.SimpleDateFormat;
@@ -11,13 +13,24 @@ import java.util.Locale;
 
 public class SwissKnife {
 
-    private static String dtToReadableDate(long dt) {
+
+    public static String formatHumidity(Context context, int humidity) {
+        return context.getString(R.string.humidity_percentage_formatting, humidity);
+    }
+
+    public static String formatTemp(Context context, double temp) {
+        return context.getString(R.string.temp_degree_formatting, temp);
+    }
+
+
+    public static String dtToReadableDate(long dt) {
 
         // dt to weekday: Wednesday
         Date date = new Date(dt);
         SimpleDateFormat formatter = new SimpleDateFormat("EEEE", Locale.getDefault());
         return formatter.format(date);
     }
+
 
     public static String formatUXFormat(Cursor cursor) {
 

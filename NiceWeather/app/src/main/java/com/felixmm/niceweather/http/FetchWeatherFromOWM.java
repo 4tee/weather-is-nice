@@ -46,7 +46,7 @@ public class FetchWeatherFromOWM {
         JSONObject forecastJson = new JSONObject(jsonStr);
         JSONArray weatherArray = forecastJson.getJSONArray(JSON_LIST);
 
-        String[] resultStrs = new String[noOfDays];
+        String[] resultStrs = new String[weatherArray.length()];
         Vector<ContentValues> cvVector = new Vector<>(weatherArray.length());
 
         for(int i = 0; i < weatherArray.length(); i++) {

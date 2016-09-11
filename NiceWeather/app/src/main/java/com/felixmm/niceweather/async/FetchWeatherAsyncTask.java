@@ -26,9 +26,8 @@ public class FetchWeatherAsyncTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         // fetch weather from NEA site
-        int noOfDay = 5;
+        int noOfDay = 8;
 
-//        Location mLocation = getArguments().getParcelable(MainActivity.LOCATION_KEY);
         if (mLocation != null) {
             double lat = mLocation.getLatitude();
             double lon = mLocation.getLongitude();
@@ -38,6 +37,7 @@ public class FetchWeatherAsyncTask extends AsyncTask<Void, Void, Void> {
                 ContentValues[] cvArray = new ContentValues[cvVector.size()];
                 cvVector.toArray(cvArray);
 
+                mContext.getContentResolver().delete(DataStruct.WeatherTable.CONTENT_URI,null,null);
                 mContext.getContentResolver().bulkInsert(DataStruct.WeatherTable.CONTENT_URI,
                         cvArray);
             }

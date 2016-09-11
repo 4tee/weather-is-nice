@@ -49,7 +49,8 @@ public class MainActivity extends AppCompatActivity implements
         Fragment weatherListFragment = WeatherListFragment.newInstance(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.mainContainer, weatherListFragment);
-        ft.commit();
+        //ft.commit();
+        ft.commitAllowingStateLoss();
     }
 
     @Override
