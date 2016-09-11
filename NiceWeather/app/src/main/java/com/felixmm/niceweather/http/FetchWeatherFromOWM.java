@@ -16,19 +16,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Vector;
 
 
+/**
+ * This class will help to fetch weather data from OpenWeatherMap.
+ */
 public class FetchWeatherFromOWM {
 
     public static final String TAG = FetchWeatherFromOWM.class.getSimpleName();
-
-    private static String formatHighLows(double high, double low) {
-        return high + "-" + low + "C";
-    }
 
     private static Vector<ContentValues> getDailyWeatherDataFromJson(String jsonStr)
             throws JSONException {
@@ -49,16 +45,9 @@ public class FetchWeatherFromOWM {
         JSONObject forecastJson = new JSONObject(jsonStr);
         JSONArray weatherArray = forecastJson.getJSONArray(JSON_LIST);
 
-        String[] resultStrs = new String[weatherArray.length()];
         Vector<ContentValues> cvVector = new Vector<>(weatherArray.length());
 
         for(int i = 0; i < weatherArray.length(); i++) {
-            //our format = "Wednesday; few clouds; Temp:29.03C-31.71C; Hum:84%",
-            String day;
-            String description;
-            String highAndLow;
-            String humidity;
-            int weatherId;
 
             // Get the JSON object representing the day
             JSONObject dayForecast = weatherArray.getJSONObject(i);
@@ -68,21 +57,18 @@ public class FetchWeatherFromOWM {
             long dt = dayForecast.getLong(JSON_DATETIME) * 1000;
 
             int humidityInt = dayForecast.getInt(JSON_HUMIDITY);
-            humidity = Integer.toString(humidityInt) + "%";
 
-            // description is in a child array called "weather", which is 1 element long.
+            // description & weatherId are in a child array called "weather", which is 1 element long.
             JSONObject weatherObject = dayForecast.getJSONArray(JSON_WEATHER).getJSONObject(0);
-            description = weatherObject.getString(JSON_DESCRIPTION);
-            weatherId = weatherObject.getInt(JSON_WEATHER_ID);
+
+            String description = weatherObject.getString(JSON_DESCRIPTION);
+            int weatherId = weatherObject.getInt(JSON_WEATHER_ID);
 
             // Temperatures are in a child object called "temp".  Try not to name variables
             // "temp" when working with temperature.  It confuses everybody.
             JSONObject temperatureObject = dayForecast.getJSONObject(JSON_TEMPERATURE);
             double high = temperatureObject.getDouble(JSON_MAX);
             double low = temperatureObject.getDouble(JSON_MIN);
-
-            highAndLow = formatHighLows(high, low);
-            //"Wednesday; few clouds; Temp:29.03C-31.71C; Hum:84%",
 
             ContentValues weatherValues = new ContentValues();
 
@@ -94,17 +80,8 @@ public class FetchWeatherFromOWM {
             weatherValues.put(DataStruct.WeatherTable.COL_HUMIDITY, humidityInt);
             cvVector.add(weatherValues);
 
-            Date date = new Date(dt);
-            SimpleDateFormat formatter = new SimpleDateFormat("EEEE",Locale.getDefault());
-            day = formatter.format(date);
-            resultStrs[i] = day + "; " + weatherId + "; " + description + "; Temp:" + highAndLow + "; Hum:" + humidity;
         }
 
-        for (String s : resultStrs) {
-            Log.v(TAG, s);
-        }
-
-        //return resultStrs;
         return cvVector;
     }
 
@@ -124,7 +101,6 @@ public class FetchWeatherFromOWM {
                 .appendQueryParameter(APPID_PARAM, "fac739a8dc93fb7d0d3207342873166f")
                 .appendQueryParameter(UNITS_PARAM, "metric")
                 .build();
-        Log.d(TAG, neaUri.toString());
 
         HttpURLConnection httpURLConnection = null;
         BufferedReader bufferedReader = null;

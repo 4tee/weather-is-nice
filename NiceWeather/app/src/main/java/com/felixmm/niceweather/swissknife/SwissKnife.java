@@ -11,6 +11,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * This class is the utility class where you store your common function such as converting datetime
+ * to readable date, etc.
+ */
 public class SwissKnife {
 
     /**
@@ -86,7 +90,6 @@ public class SwissKnife {
 
 
     public static String dtToReadableDate(long dt) {
-
         // dt to weekday: Wednesday
         Date date = new Date(dt);
         SimpleDateFormat formatter = new SimpleDateFormat("EEEE", Locale.getDefault());

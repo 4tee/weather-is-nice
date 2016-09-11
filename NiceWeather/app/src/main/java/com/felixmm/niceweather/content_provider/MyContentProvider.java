@@ -48,7 +48,6 @@ public class MyContentProvider extends ContentProvider {
                         String sortOrder) {
         Cursor cursor;
         final int matching = sUriMatcher.match(uri);
-        Log.d("MyContentProvider", "matching: " + matching);
         switch (matching) {
             case WEATHER: {
                 cursor = dbHelper.getReadableDatabase().query(
@@ -81,7 +80,6 @@ public class MyContentProvider extends ContentProvider {
         }
 
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
-        Log.d("MyContentProvider", "query uri:" +uri);
         return cursor;
     }
 
@@ -198,7 +196,6 @@ public class MyContentProvider extends ContentProvider {
                     db.endTransaction();
                 }
 
-                Log.d("MyContentProvider", "lastId at Bulk Insert: " + lastId);
                 getContext().getContentResolver().notifyChange(uri, null);
                 return returnCount;
             default:

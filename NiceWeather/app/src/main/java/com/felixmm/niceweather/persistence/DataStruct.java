@@ -23,13 +23,6 @@ public class DataStruct {
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_PROVIDER_AUTHORITY + "/" + PATH_WEATHER;
 
-
-        // _id          INTEGER PRIMARY_KEY AUTOINCREMENT
-        // date         INTEGER NOT NULL
-        // description  TEXT NOT NULL
-        // minTemp      REAL NOT NULL
-        // maxTemp      REAL NOT NULL
-        // humidity     INTEGER NOT NULL
         public static final String TABLE_NAME = "weather";
 
         public static final String COL_DATE = "date";
@@ -52,14 +45,22 @@ public class DataStruct {
             return Long.parseLong(uri.getPathSegments().get(1));
         }
 
+        /**
+         * This will return a list of weather info.
+         * @param id insertion ID
+         * @return weather Uri
+         */
         public static Uri buildWeatherUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
+        /**
+         * Return a URI with weather by the date.
+         * @param dt the datetime value in GMT
+         * @return weather Uri
+         */
         public static Uri buildWeatherUriWithDate(long dt) {
             return CONTENT_URI.buildUpon().appendPath(Long.toString(dt)).build();
-//            return CONTENT_URI.buildUpon().appendQueryParameter(COL_DATE, Long.toString(dt))
-//                    .build();
         }
     }
 }

@@ -13,6 +13,7 @@ import java.util.Vector;
 /**
  * Unused. Replaced by WeatherService.
  */
+@Deprecated
 public class FetchWeatherAsyncTask extends AsyncTask<Void, Void, Void> {
 
     private Context mContext;
