@@ -90,8 +90,6 @@ public class WeatherListFragment extends Fragment implements LoaderManager.Loade
             intent.putExtra(WeatherService.EXTRA_LATITUDE, mLocation.getLatitude());
             getActivity().startService(intent);
         }
-        //new FetchWeatherAsyncTask(getActivity(), mLocation).execute();
-
 
     }
 

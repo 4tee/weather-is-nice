@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements
         Fragment weatherListFragment = WeatherListFragment.newInstance(bundle);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.mainContainer, weatherListFragment);
-        //ft.commit();
         ft.commitAllowingStateLoss();
     }
 
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.main_activity_container);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
-        if ( !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ) {
+        if ( !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && savedInstanceState == null) {
             findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
             findViewById(R.id.button_location).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements
                        LOCATION_ENABLE_CODE);
                 }
             });
+
 
         } else {
             startLocationService();
