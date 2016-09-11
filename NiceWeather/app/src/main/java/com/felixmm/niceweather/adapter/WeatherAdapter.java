@@ -66,41 +66,35 @@ public class WeatherAdapter extends CursorAdapter {
 
         int type = getItemViewType(cursor.getPosition());
 
+        // weather max temperature from database
         double max_temp = cursor.getDouble(DataStruct.WeatherTable.COL_INDEX_MAX_TEMP);
         viewHolder.maxTempTextView.setText(SwissKnife.formatTemp(context, max_temp));
 
+        // weather min temperature from database
         double min_temp = cursor.getDouble(DataStruct.WeatherTable.COL_INDEX_MIN_TEMP);
         viewHolder.minTempTextView.setText(SwissKnife.formatTemp(context, min_temp));
 
+        // weather datetime in GMT format & convert it to readable weekday
         String day = SwissKnife.dtToReadableDate(cursor.getLong(DataStruct.WeatherTable.COL_INDEX_DATE));
         viewHolder.dayTextView.setText(day);
 
+        // weather Id from database & convert it to drawable resource identifier
+        int weatherId = cursor.getInt(DataStruct.WeatherTable.COL_INDEX_WEATHER_ID);
+        int drawableResourceId = SwissKnife.pickWeatherIcon(weatherId);
+
+        // in case the weather id cannot locate the resource
+        if (drawableResourceId != -1)
+            viewHolder.iconImageView.setImageResource(drawableResourceId);
+
         if (type == VIEW_TYPE_BIG) {
 
-            int weatherId = cursor.getInt(DataStruct.WeatherTable.COL_INDEX_WEATHER_ID);
-
             String description = cursor.getString(DataStruct.WeatherTable.COL_INDEX_DESC);
-            viewHolder.descriptionTextView.setText(description+ " " + weatherId);
+            viewHolder.descriptionTextView.setText(description);
 
             int humidity = cursor.getInt(DataStruct.WeatherTable.COL_INDEX_HUMIDITY);
             viewHolder.humidityTextView.setText(SwissKnife.formatHumidity(context, humidity));
         }
 
-//
-//        switch (viewType) {
-//            case VIEW_TYPE_TODAY: {
-//                // Get weather icon
-//                viewHolder.iconView.setImageResource(Utility.getArtResourceForWeatherCondition(
-//                        cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
-//                break;
-//            }
-//            case VIEW_TYPE_FUTURE_DAY: {
-//                // Get weather icon
-//                viewHolder.iconView.setImageResource(Utility.getIconResourceForWeatherCondition(
-//                        cursor.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID)));
-//                break;
-//            }
-//        }
     }
 
     @Override

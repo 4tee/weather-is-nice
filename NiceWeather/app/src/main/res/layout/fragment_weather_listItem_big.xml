@@ -70,7 +70,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sample_humidity_text"
-            android:drawableLeft="@drawable/ic_grain_black_24dp"
+            android:drawableLeft="@drawable/icon_humidity"
             android:fontFamily="sans-serif-condensed"
             android:layout_gravity="center_horizontal"
             android:gravity="right"
