@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_marginRight="@dimen/layout_right_margin"
+    android:layout_marginLeft="@dimen/layout_left_margin"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/list_item_day_textview"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:text="@string/sample_day"
+        android:fontFamily="sans-serif-condensed"
+        android:gravity="center_vertical"
+        android:layout_weight="1"
+        android:textAppearance="?android:textAppearanceMedium"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/list_item_icon"
+        android:src="@drawable/icon02d"/>
+
+    <TextView
+        android:id="@+id/list_item_max_temp_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/textview_temp_padding"
+        android:layout_marginLeft="@dimen/layout_left_margin"
+        android:layout_marginRight="@dimen/layout_right_margin"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:text="@string/sample_temp_text"
+        android:fontFamily="sans-serif-condensed" />
+
+    <TextView
+        android:id="@+id/list_item_min_temp_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/textview_temp_padding"
+        android:text="@string/sample_temp_text"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:fontFamily="sans-serif-condensed" />
+
+
+</LinearLayout>

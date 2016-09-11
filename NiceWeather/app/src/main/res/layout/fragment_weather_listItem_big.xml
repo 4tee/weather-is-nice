@@ -1,0 +1,80 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="@dimen/layout_right_margin"
+    android:layout_marginLeft="@dimen/layout_left_margin"
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/list_item_icon"
+        android:layout_width="@dimen/img_size_big_layout"
+        android:layout_height="@dimen/img_size_big_layout"
+        android:src="@mipmap/ic_launcher"
+        android:layout_gravity="center_horizontal"/>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="@dimen/img_top_margin_big_layout"
+        android:layout_marginBottom="@dimen/img_bottom_margin_big_layout"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/list_item_max_temp_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:textAppearanceLarge"
+            android:text="@string/sample_temp_text"
+            android:fontFamily="sans-serif-condensed" />
+
+        <TextView
+            android:id="@+id/list_item_min_temp_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sample_temp_text"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:fontFamily="sans-serif-light" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/list_item_weather_desp_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:text="@string/sample_temp_desc_text"
+        android:fontFamily="sans-serif-condensed" />
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/details_top_margin_big_layout"
+        android:layout_marginBottom="@dimen/details_bottom_margin_big_layout"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/list_item_day_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sample_day"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="?android:textAppearanceLarge"/>
+
+        <TextView
+            android:id="@+id/list_item_humidity_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sample_humidity_text"
+            android:drawableLeft="@drawable/icon_humidity"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_gravity="center_horizontal"
+            android:gravity="right"
+            android:textAppearance="?android:textAppearanceLarge"/>
+
+    </LinearLayout>
+</LinearLayout>
