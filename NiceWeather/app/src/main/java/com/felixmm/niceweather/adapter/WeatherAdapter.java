@@ -50,8 +50,8 @@ public class WeatherAdapter extends CursorAdapter {
 
         int layoutId = 0;
         // first row will use big layout and small layouts for the rest.
-        if (type == VIEW_TYPE_BIG) layoutId = R.layout.fragment_weather_listitem_big;
-        else if (type == VIEW_TYPE_SMALL) layoutId = R.layout.fragment_weather_listitem_small;
+        if (type == VIEW_TYPE_BIG) layoutId = R.layout.fragment_weather_list_item_big;
+        else if (type == VIEW_TYPE_SMALL) layoutId = R.layout.fragment_weather_list_item_small;
 
         View view = LayoutInflater.from(context).inflate(layoutId, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(view);

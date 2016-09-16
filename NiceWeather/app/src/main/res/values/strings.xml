@@ -2,6 +2,8 @@
     <string name="app_name">NiceWeather</string>
     <string name="location_setting">Location Setting</string>
     <string name="location_is_disabled">Location is disabled. Please enable in</string>
+    <string name="internet_is_disabeld">Internet is disabled. Please enable it.</string>
+    <string name="refresh">Refresh</string>
     <string name="sample_temp_text">33C</string>
     <string name="sample_temp_desc_text">Light Rain</string>
     <string name="sample_humidity_text">89%</string>
