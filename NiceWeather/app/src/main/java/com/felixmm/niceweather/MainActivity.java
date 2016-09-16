@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +17,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,13 +46,43 @@ public class MainActivity extends AppCompatActivity implements
     private boolean isFirstLocation = true;
     private LocationManager locationManager;
 
-    private void loadWeatherListFragment(Location mLocation) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(LOCATION_KEY, mLocation);
-        Fragment weatherListFragment = WeatherListFragment.newInstance(bundle);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.mainContainer, weatherListFragment);
-        ft.commitAllowingStateLoss();
+
+    private boolean isInternetEnabled() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return (null != networkInfo && networkInfo.isConnectedOrConnecting());
+    }
+
+
+    private void loadWeatherListFragment(final Location mLocation) {
+
+        if (isInternetEnabled()) {
+
+            findViewById(R.id.layout_location).setVisibility(View.GONE);
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(LOCATION_KEY, mLocation);
+            Fragment weatherListFragment = WeatherListFragment.newInstance(bundle);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.mainContainer, weatherListFragment);
+            ft.commitAllowingStateLoss();
+
+        } else {
+
+            findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
+
+            ((TextView)findViewById(R.id.textView_location)).
+                    setText(getString(R.string.internet_is_disabeld));
+            Button refreshBtn = (Button) findViewById(R.id.button_location);
+            refreshBtn.setText(getString(R.string.refresh));
+            refreshBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    loadWeatherListFragment(mLocation);
+                }
+            });
+        }
     }
 
     @Override
@@ -67,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.main_activity_container);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
-        if ( !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && savedInstanceState == null) {
+        if ( !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                && savedInstanceState == null) {
             findViewById(R.id.layout_location).setVisibility(View.VISIBLE);
             findViewById(R.id.button_location).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             buildGoogleApiClient();
             makeLocationRequest();
-            loadWeatherListFragment(LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient));
+            //loadWeatherListFragment(LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient));
 
         }
     }
@@ -153,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements
      * Fastest update at 2 seconds; this is more suitable for accurate location tracking.
      */
     protected void makeLocationRequest() {
+        Log.d(TAG, "makeLocationRequest");
         locationRequest = new LocationRequest();
         locationRequest.setInterval(LOCATION_UPDATE_INTERVAL_MILLISECONDS);
         locationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_MILLISECONDS);
@@ -169,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+        mGoogleApiClient.connect();
     }
 
 
